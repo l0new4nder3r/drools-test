@@ -96,8 +96,7 @@ public class UpdateToVersionIssueTest extends BaseModelTest {
 
     // continue working with the session
     entryPoint.insert(new Message("Hello World"));
-    Assert.assertEquals(3, ksession.fireAllRules());
-    // why 3? because r1 already triggered by message 1, and r2B triggered by both messages
+    Assert.assertEquals("Firing after update, expecting 3 : one r1 + two r2b for both messages", 3, ksession.fireAllRules());
 
     ksession.dispose();
   }
@@ -139,7 +138,9 @@ public class UpdateToVersionIssueTest extends BaseModelTest {
     entryPoint.insert(new Message("Hello World"));
     // Expected is 3, as in control condition
     // result is 4, KO
-    Assert.assertEquals(4, ksession.fireAllRules());
+    final int rulesFired = ksession.fireAllRules();
+    this.logObjectsInSession(ksession);
+    Assert.assertEquals("Firing after update, expecting 3 as in control condition", 3, rulesFired);
     // firing again R1 rule for first message?!
 
     ksession.dispose();
@@ -184,8 +185,7 @@ public class UpdateToVersionIssueTest extends BaseModelTest {
 
     // continue working with the session
     entryPoint.insert(new Message("Hello World"));
-    Assert.assertEquals(4, ksession.fireAllRules());
-    // why 4? 1 new R1, and 3 r2B for 3 messages
+    Assert.assertEquals("Firing after update, expecting 4 : one r1 + three r2b for three times messages and a token", 4, ksession.fireAllRules());
     this.logObjectsInSession(ksession);
 
     ksession.dispose();
@@ -235,11 +235,11 @@ public class UpdateToVersionIssueTest extends BaseModelTest {
     entryPoint.insert(new Message("Hello World"));
     // Expected is 4, as in control condition
     // result is 7, KO
-    Assert.assertEquals(7, ksession.fireAllRules());
+    final int rulesFired = ksession.fireAllRules();
+    this.logObjectsInSession(ksession);
+    Assert.assertEquals("Firing after update, expecting 4 as in control condition", 4, rulesFired);
     // All seems forgotten : firing again R1 rule for first messages (3)
     // + 1 new init token, + 3 r2b
-
-    this.logObjectsInSession(ksession);
 
     ksession.dispose();
   }
